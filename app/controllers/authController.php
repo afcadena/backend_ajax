@@ -21,19 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['usuario_nombre'] = $usuario['nombre'];
         $_SESSION['usuario_rol'] = $usuario['rol_nombre'];
 
-        switch ($usuario['rol_nombre']) {
-            case 'admin':
-                header("Location: ../views/admin/panel.php");
-                break;
-            case 'docente':
-                header("Location: ../views/docente/panel.php");
-                break;
-            case 'estudiante':
-                header("Location: ../views/estudiante/panel.php");
-                break;
-            default:
-                echo "Rol no valido";
-        }
+        header("Location: ../");
+        exit;
     } else {
         echo "Correo o contraseña incorrectos";
     }
