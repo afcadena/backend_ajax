@@ -27,7 +27,7 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -67,43 +67,6 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
             padding-bottom: 10px;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
         .btn {
             padding: 12px 24px;
             border: none;
@@ -120,11 +83,6 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-success {
@@ -168,9 +126,10 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
 
         .table th,
         .table td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
+            font-size: 14px;
         }
 
         .table th {
@@ -206,9 +165,20 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
             color: #0c5460;
         }
 
-        .status-cancelada {
-            background-color: #f8d7da;
-            color: #721c24;
+        .agrupador-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .tipo-dependiente {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
         }
 
         .modal {
@@ -260,33 +230,39 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            font-weight: 500;
+        .action-buttons .btn {
+            padding: 8px 12px;
+            font-size: 12px;
         }
 
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
-        .alert-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
         }
 
         @media (max-width: 768px) {
@@ -294,16 +270,17 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
                 padding: 10px;
             }
             
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .action-buttons {
                 flex-direction: column;
             }
             
             .table-container {
-                font-size: 14px;
+                font-size: 12px;
+            }
+
+            .table th,
+            .table td {
+                padding: 8px;
             }
         }
     </style>
@@ -315,105 +292,77 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
             <p>Sistema de administración de votaciones institucionales</p>
         </div>
 
-        <!-- Formulario para crear/editar votación -->
-        <div class="section">
-            <h2 class="section-title">Crear Nueva Votación</h2>
-            <form id="formVotacion">
-                <input type="hidden" id="id_votacion" name="id_votacion">
-                <input type="hidden" name="usuario_creador" value="admin">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="titulo">Título de la Votación *</label>
-                        <input type="text" id="titulo" name="titulo" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="id_tipo_votacion">Tipo de Votación *</label>
-                        <select id="id_tipo_votacion" name="id_tipo_votacion" required>
-                            <option value="">Seleccione un tipo</option>
-                            <?php foreach($tipos_votacion as $tipo): ?>
-                                <option value="<?php echo $tipo['ID_TIPO_VOTACION']; ?>">
-                                    <?php echo $tipo['NOMBRE_TIPO']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="id_facultad">Facultad *</label>
-                        <select id="id_facultad" name="id_facultad" required>
-                            <option value="">Seleccione una facultad</option>
-                            <?php foreach($facultades as $facultad): ?>
-                                <option value="<?php echo $facultad['ID_FACULTAD']; ?>">
-                                    <?php echo $facultad['NOMBRE_FACULTAD']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="fecha_inicio">Fecha y Hora de Inicio *</label>
-                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="fecha_fin">Fecha y Hora de Fin *</label>
-                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" required>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button type="submit" class="btn btn-primary" id="btnGuardar">Crear Votación</button>
-                    <button type="button" class="btn btn-secondary" id="btnCancelar" onclick="limpiarFormulario()">Cancelar</button>
-                </div>
-            </form>
+        <!-- Estadísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number"><?php echo count($votaciones); ?></div>
+                <div class="stat-label">Total Votaciones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo count(array_unique(array_column($votaciones, 'AGRUPADOR'))); ?></div>
+                <div class="stat-label">Agrupadores Únicos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><?php echo count(array_unique(array_column($votaciones, 'FACULTAD'))); ?></div>
+                <div class="stat-label">Facultades</div>
+            </div>
         </div>
 
         <!-- Lista de votaciones -->
         <div class="section">
-            <h2 class="section-title">Votaciones Registradas</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin-bottom: 0;">Votaciones Registradas</h2>
+                <a href="crear_votacion.php" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Nueva Votación
+                </a>
+            </div>
+            
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Título</th>
-                            <th>Tipo</th>
+                            <th>Tipo de Solicitud</th>
                             <th>Facultad</th>
+                            <th>Tipo Dependiente</th>
+                            <th>Agrupador</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Fin</th>
                             <th>Estado</th>
-                            <th>Planchas</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($votaciones as $votacion): ?>
                         <tr>
-                            <td><?php echo $votacion['ID_VOTACION']; ?></td>
-                            <td><?php echo $votacion['TITULO']; ?></td>
-                            <td><?php echo $votacion['NOMBRE_TIPO']; ?></td>
-                            <td><?php echo $votacion['NOMBRE_FACULTAD']; ?></td>
-                            <td><?php echo date('d/m/Y H:i', strtotime($votacion['FECHA_INICIO'])); ?></td>
-                            <td><?php echo date('d/m/Y H:i', strtotime($votacion['FECHA_FIN'])); ?></td>
+                            <td><?php echo $votacion['ID_TIPO_SOLICITUD']; ?></td>
+                            <td>
+                                <strong><?php echo substr($votacion['TIPO_SOLICITUD'], 0, 50); ?></strong>
+                                <?php if(strlen($votacion['TIPO_SOLICITUD']) > 50): ?>
+                                    <span style="color: #666;">...</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo $votacion['FACULTAD']; ?></td>
+                            <td>
+                                <span class="tipo-dependiente"><?php echo $votacion['TIPO_DEPENDIENTE']; ?></span>
+                            </td>
+                            <td>
+                                <span class="agrupador-badge"><?php echo $votacion['AGRUPADOR']; ?></span>
+                            </td>
+                            <td><?php echo date('d/m/Y', strtotime($votacion['FECHA_INICIO'])); ?></td>
+                            <td><?php echo date('d/m/Y', strtotime($votacion['FECHA_FIN'])); ?></td>
                             <td>
                                 <span class="status-badge status-<?php echo strtolower($votacion['ESTADO']); ?>">
                                     <?php echo $votacion['ESTADO']; ?>
                                 </span>
                             </td>
-                            <td><?php echo $votacion['total_planchas']; ?></td>
                             <td>
                                 <div class="action-buttons">
                                     <?php if($votacion['ESTADO'] == 'PENDIENTE'): ?>
-                                        <button class="btn btn-warning" onclick="editarVotacion(<?php echo $votacion['ID_VOTACION']; ?>)">Editar</button>
-                                        <button class="btn btn-danger" onclick="eliminarVotacion(<?php echo $votacion['ID_VOTACION']; ?>)">Eliminar</button>
+                                        <button class="btn btn-warning" onclick="editarVotacion(<?php echo $votacion['ID_TIPO_SOLICITUD']; ?>)">Editar</button>
+                                        <button class="btn btn-danger" onclick="eliminarVotacion(<?php echo $votacion['ID_TIPO_SOLICITUD']; ?>)">Eliminar</button>
                                     <?php endif; ?>
-                                    <button class="btn btn-primary" onclick="verDetalles(<?php echo $votacion['ID_VOTACION']; ?>)">Ver</button>
+                                    <button class="btn btn-primary" onclick="verDetalles(<?php echo $votacion['ID_TIPO_SOLICITUD']; ?>)">Ver</button>
                                 </div>
                             </td>
                         </tr>
@@ -437,61 +386,9 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        let modoEdicion = false;
-
-        document.getElementById('formVotacion').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const accion = modoEdicion ? 'modificar_votacion' : 'crear_votacion';
-            formData.append('accion', accion);
-            
-            fetch('../votacionAjax.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                Swal.fire({
-                    title: data.titulo,
-                    text: data.texto,
-                    icon: data.icono,
-                    confirmButtonText: 'Aceptar'
-                }).then(() => {
-                    if (data.tipo === 'limpiar' || data.icono === 'success') {
-                        location.reload();
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Ocurrió un error inesperado',
-                    icon: 'error'
-                });
-            });
-        });
-
         function editarVotacion(id) {
-            fetch(`../votacionAjax.php?accion=obtener_votacion&id_votacion=${id}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    document.getElementById('id_votacion').value = data.ID_VOTACION;
-                    document.getElementById('titulo').value = data.TITULO;
-                    document.getElementById('id_tipo_votacion').value = data.ID_TIPO_VOTACION;
-                    document.getElementById('id_facultad').value = data.ID_FACULTAD;
-                    document.getElementById('fecha_inicio').value = data.FECHA_INICIO.replace(' ', 'T');
-                    document.getElementById('fecha_fin').value = data.FECHA_FIN.replace(' ', 'T');
-                    
-                    document.getElementById('btnGuardar').textContent = 'Modificar Votación';
-                    document.querySelector('.section-title').textContent = 'Modificar Votación';
-                    modoEdicion = true;
-                    
-                    document.getElementById('formVotacion').scrollIntoView({ behavior: 'smooth' });
-                }
-            });
+            // Redirigir a la página de edición
+            window.location.href = `editar_votacion.php?id=${id}`;
         }
 
         function eliminarVotacion(id) {
@@ -506,14 +403,15 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
                 if (result.isConfirmed) {
                     const formData = new FormData();
                     formData.append('accion', 'eliminar_votacion');
-                    formData.append('id_votacion', id);
+                    formData.append('id_tipo_solicitud', id);
                     
-                    fetch('../votacionAjax.php', {
+                    fetch('/prueba_votaciones/app/ajax/votacionAjax.php', {
                         method: 'POST',
                         body: formData
                     })
                     .then(response => response.json())
                     .then(data => {
+                        console.log('Respuesta eliminación:', data); // 👈 Debug
                         Swal.fire({
                             title: data.titulo,
                             text: data.texto,
@@ -523,55 +421,76 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
                                 location.reload();
                             }
                         });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error inesperado',
+                            icon: 'error'
+                        });
                     });
                 }
             });
         }
 
         function verDetalles(id) {
-            fetch(`../votacionAjax.php?accion=obtener_votacion&id_votacion=${id}`)
+            fetch(`/prueba_votaciones/app/ajax/votacionAjax.php?accion=obtener_votacion&id_votacion=${id}`)
             .then(response => response.json())
             .then(data => {
+                console.log('Datos recibidos:', data); // 👈 Debug
                 if (data) {
                     const contenido = `
-                        <div class="form-group">
-                            <strong>Título:</strong> ${data.TITULO}
+                        <div style="margin-bottom: 15px;">
+                            <strong>ID:</strong> ${data.ID_TIPO_SOLICITUD}
                         </div>
-                        <div class="form-group">
-                            <strong>Tipo:</strong> ${data.NOMBRE_TIPO}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Tipo de Solicitud:</strong><br>
+                            ${data.TIPO_SOLICITUD}
                         </div>
-                        <div class="form-group">
-                            <strong>Facultad:</strong> ${data.NOMBRE_FACULTAD}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Servicio:</strong> ${data.SERVICIO}
                         </div>
-                        <div class="form-group">
-                            <strong>Fecha de Inicio:</strong> ${new Date(data.FECHA_INICIO).toLocaleString()}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Facultad:</strong> ${data.FACULTAD}
                         </div>
-                        <div class="form-group">
-                            <strong>Fecha de Fin:</strong> ${new Date(data.FECHA_FIN).toLocaleString()}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Tipo de Dependiente:</strong> ${data.TIPO_DEPENDIENTE}
                         </div>
-                        <div class="form-group">
-                            <strong>Estado:</strong> <span class="status-badge status-${data.ESTADO.toLowerCase()}">${data.ESTADO}</span>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Agrupador:</strong> 
+                            <span class="agrupador-badge">${data.AGRUPADOR}</span>
                         </div>
-                        <div class="form-group">
-                            <strong>Creado por:</strong> ${data.USUARIO_CREADOR}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Fecha de Inicio:</strong> ${new Date(data.FECHA_INICIO).toLocaleDateString('es-ES')}
                         </div>
-                        <div class="form-group">
-                            <strong>Fecha de Creación:</strong> ${new Date(data.FECHA_CREACION).toLocaleString()}
+                        <div style="margin-bottom: 15px;">
+                            <strong>Fecha de Fin:</strong> ${new Date(data.FECHA_FIN).toLocaleDateString('es-ES')}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Estado:</strong> 
+                            <span class="status-badge status-${data.ESTADO.toLowerCase()}">${data.ESTADO}</span>
                         </div>
                     `;
                     
                     document.getElementById('contenidoDetalles').innerHTML = contenido;
                     document.getElementById('modalDetalles').style.display = 'block';
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudieron cargar los detalles de la votación',
+                        icon: 'error'
+                    });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Ocurrió un error al cargar los detalles',
+                    icon: 'error'
+                });
             });
-        }
-
-        function limpiarFormulario() {
-            document.getElementById('formVotacion').reset();
-            document.getElementById('id_votacion').value = '';
-            document.getElementById('btnGuardar').textContent = 'Crear Votación';
-            document.querySelector('.section-title').textContent = 'Crear Nueva Votación';
-            modoEdicion = false;
         }
 
         function cerrarModal(modalId) {
@@ -586,6 +505,30 @@ $tipos_votacion = $insVotacion->obtenerTiposVotacion();
                     modal.style.display = 'none';
                 }
             });
+        }
+
+        // Función para filtrar la tabla
+        function filtrarTabla() {
+            const input = document.getElementById('filtroTabla');
+            const filtro = input.value.toUpperCase();
+            const tabla = document.querySelector('.table tbody');
+            const filas = tabla.getElementsByTagName('tr');
+
+            for (let i = 0; i < filas.length; i++) {
+                const fila = filas[i];
+                const celdas = fila.getElementsByTagName('td');
+                let mostrar = false;
+
+                for (let j = 0; j < celdas.length; j++) {
+                    const celda = celdas[j];
+                    if (celda && celda.textContent.toUpperCase().indexOf(filtro) > -1) {
+                        mostrar = true;
+                        break;
+                    }
+                }
+
+                fila.style.display = mostrar ? '' : 'none';
+            }
         }
     </script>
 </body>

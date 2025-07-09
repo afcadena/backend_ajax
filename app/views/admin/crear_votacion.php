@@ -28,7 +28,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listar_votaciones.php">
+                            <a class="nav-link" href="gestionar_votaciones.php">
                                 <i class="fas fa-list"></i> Listar Votaciones
                             </a>
                         </li>
@@ -55,55 +55,64 @@
                             </div>
                             <div class="card-body">
                                 <form id="formCrearVotacion">
-     <div class="mb-3">
-    <label for="id_tipo_solicitud" class="form-label">ID Tipo de Solicitud *</label>
-    <input type="number" class="form-control" id="id_tipo_solicitud" name="id_tipo_solicitud" required>
-</div>
-    <div class="mb-3">
-        <label for="tipo_solicitud" class="form-label">Título / Tipo de Solicitud *</label>
-        <input type="text" class="form-control" id="tipo_solicitud" name="tipo_solicitud" required>
-    </div>
+                                    <div class="mb-3">
+                                        <label for="id_tipo_solicitud" class="form-label">ID Tipo de Solicitud (opcional)</label>
+                                        <input type="number" class="form-control" id="id_tipo_solicitud" name="id_tipo_solicitud" placeholder="Se generará automáticamente si se deja vacío">
+                                        <small class="form-text text-muted">Si no se especifica, se generará automáticamente</small>
+                                    </div>
 
-    <input type="hidden" name="servicio" value="VOT">
+                                    <div class="mb-3">
+                                        <label for="tipo_solicitud" class="form-label">Tipo de Solicitud *</label>
+                                        <input type="text" class="form-control" id="tipo_solicitud" name="tipo_solicitud" required placeholder="Ej: ELECCION DE LOS REPRESENTANTES DE LOS ESTUDIANTES A LA CONSILIATURA">
+                                    </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="fecha_inicio" class="form-label">Fecha de Inicio *</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="fecha_fin" class="form-label">Fecha de Fin *</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
-            </div>
-        </div>
-    </div>
+                                    <input type="hidden" name="servicio" value="VOT">
 
-    <div class="mb-3">
-        <label for="id_tipo_dependiente" class="form-label">Tipo de Dependiente (opcional)</label>
-        <select class="form-select" id="id_tipo_dependiente" name="id_tipo_dependiente">
-            <option value="">Sin asignar</option>
-            <option value="1">Estudiante</option>
-            <option value="2">Docente</option>
-            <option value="3">Administrativo</option>
-        </select>
-    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="fecha_inicio" class="form-label">Fecha de Inicio *</label>
+                                                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="fecha_fin" class="form-label">Fecha de Fin *</label>
+                                                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                                            </div>
+                                        </div>
+                                    </div>
 
-    <div class="mb-3">
-        <label for="agrupador" class="form-label">Agrupador *</label>
-        <input type="text" class="form-control" id="agrupador" name="agrupador" required>
-    </div>
+                                    <div class="mb-3">
+                                        <label for="id_tipo_dependiente" class="form-label">Tipo de Dependiente (opcional)</label>
+                                        <select class="form-select" id="id_tipo_dependiente" name="id_tipo_dependiente">
+                                            <option value="">Sin asignar</option>
+                                            <option value="1">Estudiante</option>
+                                            <option value="2">Docente</option>
+                                            <option value="3">Administrativo</option>
+                                        </select>
+                                        <small class="form-text text-muted">Puede dejarse sin asignar (null)</small>
+                                    </div>
 
-    <input type="hidden" name="accion" value="crear_votacion">
-    <input type="hidden" name="usuario_creador" value="<?php echo $_SESSION['usuario'] ?? 'admin'; ?>">
+                                    <div class="mb-3">
+                                        <label class="form-label">Agrupador (se genera automáticamente)</label>
+                                        <div class="form-control bg-light" id="preview_agrupador" style="color: #6c757d;">
+                                            Se generará automáticamente al enviar
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Formato: [E/D/A/X][Facultad] - E=Estudiante, D=Docente, A=Administrativo, X=Sin asignar
+                                        </small>
+                                    </div>
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="button" class="btn btn-secondary me-md-2" onclick="history.back()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Crear Votación</button>
-    </div>
-</form>
+                                    <input type="hidden" id="agrupador" name="agrupador">
+                                    <input type="hidden" name="accion" value="crear_votacion">
+                                    <input type="hidden" name="usuario_creador" value="<?php echo $_SESSION['usuario'] ?? 'admin'; ?>">
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" class="btn btn-secondary me-md-2" onclick="history.back()">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Crear Votación</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
@@ -161,28 +170,29 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="card-title mb-0">Guía de Creación</h6>
+                                <h6 class="card-title mb-0">Estructura de la Base de Datos</h6>
                             </div>
                             <div class="card-body">
                                 <div class="alert alert-info">
-                                    <h6><i class="fas fa-info-circle"></i> Pasos para crear una votación:</h6>
-                                    <ol class="mb-0">
-                                        <li>Complete la información básica</li>
-                                        <li>Configure las fechas de inicio y fin</li>
-                                        <li>Agregue las preguntas necesarias</li>
-                                        <li>Configure las opciones de respuesta</li>
-                                        <li>Asigne los votantes habilitados</li>
-                                        <li>Active la votación</li>
-                                    </ol>
+                                    <h6><i class="fas fa-database"></i> Campos que se guardarán:</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>ID_TIPO_SOLICITUD:</strong> Auto-generado o manual</li>
+                                        <li><strong>TIPO_SOLICITUD:</strong> Título de la votación</li>
+                                        <li><strong>SERVICIO:</strong> Siempre "VOT"</li>
+                                        <li><strong>FECHA_INICIO:</strong> Fecha de inicio</li>
+                                        <li><strong>FECHA_FIN:</strong> Fecha de fin</li>
+                                        <li><strong>ID_TIPO_DEPENDIENTE:</strong> Opcional (puede ser null)</li>
+                                        <li><strong>AGRUPADOR:</strong> Generado automáticamente</li>
+                                    </ul>
                                 </div>
 
                                 <div class="alert alert-warning">
-                                    <h6><i class="fas fa-exclamation-triangle"></i> Importante:</h6>
-                                    <ul class="mb-0">
-                                        <li>Las fechas no pueden modificarse una vez iniciada la votación</li>
-                                        <li>Asegúrese de probar la votación antes de activarla</li>
-                                        <li>Los votantes deben estar registrados en el sistema</li>
-                                    </ul>
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Ejemplo de agrupador:</h6>
+                                    <p class="mb-0">
+                                        <strong>EDER</strong> = <strong>E</strong>studiante + <strong>DER</strong>echo<br>
+                                        <strong>DING</strong> = <strong>D</strong>ocente + <strong>ING</strong>eniería<br>
+                                        <strong>XGEN</strong> = Sin asignar + <strong>GEN</strong>eral
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -195,22 +205,62 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-       document.getElementById('formCrearVotacion').addEventListener('submit', function(e) {
+document.getElementById('formCrearVotacion').addEventListener('submit', function(e) {
     e.preventDefault();
-
+    
+    // Obtener valores para construir el agrupador
+    const dependiente = document.getElementById('id_tipo_dependiente').value;
+    const titulo = document.getElementById('tipo_solicitud').value.toUpperCase();
+    
+    // Determinar letra según tipo de dependiente
+    let letra = '';
+    if (dependiente == '1') letra = 'E'; // Estudiante
+    else if (dependiente == '2') letra = 'D'; // Docente
+    else if (dependiente == '3') letra = 'A'; // Administrativo
+    else letra = 'X'; // Sin asignar (null)
+    
+    // Mapeo de facultades más preciso
+    const facultadesMap = {
+        'DERECHO': 'DER',
+        'INGENIER': 'ING',
+        'ECONOM': 'ECO',
+        'SALUD': 'SAL',
+        'MEDICINA': 'MED',
+        'EDUCACION': 'EDU',
+        'ADMINISTRACION': 'ADM',
+        'CONTADURIA': 'CON',
+        'CIENCIAS': 'CIE',
+        'SOCIALES': 'SOC',
+        'CONSILIATURA': 'CON',
+        'CONSEJO': 'CON'
+    };
+    
+    // Detectar facultad en el título
+    let facultad = 'GEN'; // Por defecto General
+    for (const [palabra, abrev] of Object.entries(facultadesMap)) {
+        if (titulo.includes(palabra)) {
+            facultad = abrev;
+            break;
+        }
+    }
+    
+    // Construir y setear el agrupador
+    const agrupadorFinal = letra + facultad;
+    document.getElementById('agrupador').value = agrupadorFinal;
+    
+    console.log(`Agrupador construido: ${agrupadorFinal} (${letra} + ${facultad})`);
+    
     const formData = new FormData(this);
-
+    
     fetch('/prueba_votaciones/app/ajax/votacionAjax.php', {
         method: 'POST',
         body: formData
     })
     .then(response => response.text())
     .then(text => {
-        console.log("Respuesta cruda del servidor:", text); // 🪵 Ver en consola
-
+        console.log("Respuesta cruda del servidor:", text);
         try {
             const data = JSON.parse(text);
-
             if (data.tipo === 'limpiar') {
                 Swal.fire({
                     title: data.titulo,
@@ -221,6 +271,7 @@
                     document.getElementById('seccionPreguntas').style.display = 'block';
                     document.getElementById('id_votacion_pregunta').value = data.id_votacion;
                     document.getElementById('formCrearVotacion').reset();
+                    document.getElementById('preview_agrupador').textContent = 'Se generará automáticamente al enviar';
                 });
             } else {
                 Swal.fire({
@@ -249,42 +300,75 @@
     });
 });
 
-
-        document.getElementById('formAgregarPregunta').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            formData.append('accion', 'agregar_pregunta');
-            
-            fetch('../../app/ajax/votacionAjax.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                Swal.fire({
-                    title: data.titulo,
-                    text: data.texto,
-                    icon: data.icono
-                });
-                
-                if (data.tipo === 'limpiar') {
-                    this.reset();
-                    cargarPreguntasCreadas();
-                }
-            });
+// Resto del script permanece igual
+document.getElementById('formAgregarPregunta').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('accion', 'agregar_pregunta');
+    
+    fetch('../../app/ajax/votacionAjax.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            title: data.titulo,
+            text: data.texto,
+            icon: data.icono
         });
-
-        function cargarPreguntasCreadas() {
-            const idVotacion = document.getElementById('id_votacion_pregunta').value;
-            if (!idVotacion) return;
-            
-            fetch(`../../app/ajax/votacionAjax.php?accion=listar_preguntas&id_votacion=${idVotacion}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('listaPreguntasCreadas').innerHTML = data.html;
-            });
+        
+        if (data.tipo === 'limpiar') {
+            this.reset();
+            cargarPreguntasCreadas();
         }
-    </script>
+    });
+});
+
+function cargarPreguntasCreadas() {
+    const idVotacion = document.getElementById('id_votacion_pregunta').value;
+    if (!idVotacion) return;
+    
+    fetch(`../../app/ajax/votacionAjax.php?accion=listar_preguntas&id_votacion=${idVotacion}`)
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('listaPreguntasCreadas').innerHTML = data.html;
+    });
+}
+
+function actualizarPreviewAgrupador() {
+    const dependiente = document.getElementById('id_tipo_dependiente').value;
+    const titulo = document.getElementById('tipo_solicitud').value.toUpperCase();
+    
+    let letra = '';
+    if (dependiente == '1') letra = 'E';
+    else if (dependiente == '2') letra = 'D';
+    else if (dependiente == '3') letra = 'A';
+    else letra = 'X';
+    
+    const facultadesMap = {
+        'DERECHO': 'DER', 'INGENIER': 'ING', 'ECONOM': 'ECO',
+        'SALUD': 'SAL', 'MEDICINA': 'MED', 'EDUCACION': 'EDU',
+        'ADMINISTRACION': 'ADM', 'CONTADURIA': 'CON', 'CIENCIAS': 'CIE', 
+        'SOCIALES': 'SOC', 'CONSILIATURA': 'CON', 'CONSEJO': 'CON'
+    };
+    
+    let facultad = 'GEN';
+    for (const [palabra, abrev] of Object.entries(facultadesMap)) {
+        if (titulo.includes(palabra)) {
+            facultad = abrev;
+            break;
+        }
+    }
+    
+    const preview = letra + facultad;
+    document.getElementById('preview_agrupador').textContent = preview || 'Se generará automáticamente al enviar';
+}
+
+// Eventos para actualizar preview
+document.getElementById('id_tipo_dependiente').addEventListener('change', actualizarPreviewAgrupador);
+document.getElementById('tipo_solicitud').addEventListener('input', actualizarPreviewAgrupador);
+</script>
 </body>
 </html>
