@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Si la URL no apunta a un archivo o carpeta existente, redirige a index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?view=$1 [QSA,L]
+
